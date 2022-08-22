@@ -1,6 +1,6 @@
 import * as React from 'react';
 import color from 'color';
-import { StyleSheet, Text, Platform } from 'react-native';
+import { StyleSheet, Text, Platform, I18nManager } from 'react-native';
 import { fireEvent, render } from '@testing-library/react-native';
 import TextInput from '../TextInput/TextInput';
 import { red500 } from '../../styles/themes/v2/colors';
@@ -207,6 +207,54 @@ it('renders label with correct color when inactive', () => {
 
   expect(getByTestId('text-input-label-inactive')).toHaveStyle({
     color: getTheme().colors.onSurfaceVariant,
+  });
+});
+
+it('correctly applies padding offset to input label on Android when LTR', () => {
+  Platform.OS = 'android';
+  I18nManager.isRTL = false;
+
+  const { getByTestId } = render(
+    <TextInput
+      label="Flat input"
+      mode="flat"
+      testID="text-input-flat"
+      left={
+        <TextInput.Affix text={affixTextValue} textStyle={style.inputStyle} />
+      }
+      right={
+        <TextInput.Affix text={affixTextValue} textStyle={style.inputStyle} />
+      }
+    />
+  );
+
+  expect(getByTestId('text-input-flat-label-active')).toHaveStyle({
+    paddingLeft: 16,
+    paddingRight: 56,
+  });
+});
+
+it('correctly applies padding offset to input label on Android when RTL', () => {
+  Platform.OS = 'android';
+  I18nManager.isRTL = true;
+
+  const { getByTestId } = render(
+    <TextInput
+      label="Flat input"
+      mode="flat"
+      testID="text-input-flat"
+      left={
+        <TextInput.Affix text={affixTextValue} textStyle={style.inputStyle} />
+      }
+      right={
+        <TextInput.Affix text={affixTextValue} textStyle={style.inputStyle} />
+      }
+    />
+  );
+
+  expect(getByTestId('text-input-flat-label-active')).toHaveStyle({
+    paddingLeft: 56,
+    paddingRight: 16,
   });
 });
 
